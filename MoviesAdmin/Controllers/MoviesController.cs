@@ -12,9 +12,10 @@ public class MoviesController : Controller
     }
 
     // GET: MOVIES
-    public async Task<IActionResult> Index()    
+    public async Task<IActionResult> Index()                   //Listing all movies with the newest shown on top of the list
+                                                               //Reference: https://www.learnentityframeworkcore.com/querying/linq-queries
     {
-        return View(await _context.Movie.ToListAsync());
+        return View(await _context.Movie.OrderByDescending(Movie=> Movie.ReleaseDate).ToListAsync());
     }
 
     // GET: MOVIES/Details/5
@@ -129,7 +130,7 @@ public class MoviesController : Controller
     // POST: MOVIES/Delete/5
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeleteConfirmed(int? id)
+    public async Task<IActionResult> DeleteConfirmed(int? id)     
     {
         var movie = await _context.Movie.FindAsync(id);
         if (movie != null)
