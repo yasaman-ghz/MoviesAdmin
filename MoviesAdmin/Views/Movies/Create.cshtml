@@ -27,7 +27,7 @@
 
             <div class="mb-3">
                 <label asp-for="Synopsis" class="form-label"></label>
-                <input asp-for="Synopsis" class="form-control" />
+                <textarea style="resize: none;" asp-for="Synopsis" class="form-control"></textarea>     @*Reference: https://getbootstrap.com/docs/5.3/forms/form-control/*@
                 <span asp-validation-for="Synopsis" class="text-danger"></span>
             </div>
 

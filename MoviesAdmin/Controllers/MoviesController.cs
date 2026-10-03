@@ -12,9 +12,18 @@ public class MoviesController : Controller
     }
 
     // GET: MOVIES
-    public async Task<IActionResult> Index()                   //Listing all movies with the newest shown on top of the list
-                                                               //Reference: https://www.learnentityframeworkcore.com/querying/linq-queries
+    public async Task<IActionResult> Index(string searchString)//passing string from the form                 //Listing all movies with the newest shown on top of the list
+                                                                                                              //Reference: https://www.learnentityframeworkcore.com/querying/linq-queries
     {
+        //Search bar reference: https://www.youtube.com/watch?v=5-fVog2hd5c
+        var movies = from m in _context.Movie
+                    select m;
+        if (!string.IsNullOrEmpty(searchString))
+        {
+            movies = movies.Where(m => m.Title.Contains(searchString));
+            return View(await movies.ToListAsync()); 
+        }
+
         return View(await _context.Movie.OrderByDescending(Movie=> Movie.ReleaseDate).ToListAsync());
     }
 

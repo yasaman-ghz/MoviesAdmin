@@ -6,6 +6,13 @@
 
 <h1>Movies:</h1>
 
+
+@*Search bar reference: https://www.youtube.com/watch?v=5-fVog2hd5c*@
+<form asp-controller="Movies" asp-action="Index" method="get">
+    <input type="search" class="form-control" name="searchString" placeholder="Search by title..." style="width:300px; margin-top: 10px;" />
+    <input type="submit" value=" Search / Back to all " class="btn btn-primary" style="margin-top: 10px; margin-bottom: 10px;" />
+</form>
+
 <p>
     <a asp-action="Create">Create a new record</a>
 </p>
@@ -46,7 +53,7 @@
                 @Html.DisplayFor(model => item.Genre)
             </td>
             <td>
-                @Html.DisplayFor(model => item.Synopsis)
+                    @item.Synopsis.Substring(0, 30) ...(<a asp-action="Details" asp-route-id="@item.Id">more</a>)
             </td>
             <td>
                 @Html.DisplayFor(model => item.Rating)

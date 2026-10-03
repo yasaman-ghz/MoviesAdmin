@@ -15,7 +15,8 @@ namespace MoviesAdmin.Models
         [RegularExpression(@"^[^,\s]+$", ErrorMessage = "Please only one genre and no spaces or commas.")]
         public string Genre { get; set; } = string.Empty;
 
-        [Required, StringLength(500)]
+        [MinLength(30, ErrorMessage ="Minimum 30 characters required.")]
+        [MaxLength(700, ErrorMessage ="Maximum 700 characters accepted.")]
         public string Synopsis { get; set; } = string.Empty;
 
         [Required, Display(Prompt ="e.g. PG")]                                                      
@@ -30,8 +31,9 @@ namespace MoviesAdmin.Models
         public int Runtime { get; set; } // Duration in minutes
 
         [Required, Display(Name = "Release Date")]
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]   //Reference: https://learn.microsoft.com/en-us/aspnet/core/data/ef-mvc/complex-data-model?view=aspnetcore-10.0
-        public DateOnly ReleaseDate { get; set; } // Only the date of the release            //Reference: https://stackoverflow.com/questions/7372038/is-there-any-way-to-change-input-type-date-format
+        [DataType(DataType.Date)]                                                            //This line and the one after it are copied and pasted from the source below:
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]   //https://learn.microsoft.com/en-us/aspnet/core/data/ef-mvc/complex-data-model?view=aspnetcore-10.0
+        public DateOnly ReleaseDate { get; set; } // Only the date of the release            //Why date may not be displayed in the same format as I have specified in [DisplayFormat()]:
+                                                                                             //https://stackoverflow.com/questions/7372038/is-there-any-way-to-change-input-type-date-format
     }
 }
