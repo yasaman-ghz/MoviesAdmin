@@ -1,10 +1,10 @@
-@model IEnumerable<MoviesAdmin.Models.Movie>
+﻿@model IEnumerable<MoviesAdmin.Models.Movie>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Results";
 }
 
-<h1>All movies:</h1>
+<h1>Results:</h1>
 
 
 @*Search bar reference: https://www.youtube.com/watch?v=5-fVog2hd5c*@
@@ -24,8 +24,9 @@
 </form>
 
 <p>
-    <a asp-action="Create"><button type="submit" class="btn btn-primary" style="margin-top: 10px;"><i class="bi bi-plus"></i>Add</button></a>
+<a asp-action="Index"><button type="submit" class="btn btn-primary" style="margin-top: 10px;">Back to all</button></a>
 </p>
+
 <table class="table">
     <thead>
         <tr>
