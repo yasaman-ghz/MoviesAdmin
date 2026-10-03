@@ -8,13 +8,23 @@
 
 
 @*Search bar reference: https://www.youtube.com/watch?v=5-fVog2hd5c*@
-<form asp-controller="Movies" asp-action="Index" method="get">
-    <input type="search" class="form-control" name="searchString" placeholder="Search by title..." style="width:300px; margin-top: 10px;" />
-    <input type="submit" value=" Search / Back to all " class="btn btn-primary" style="margin-top: 10px; margin-bottom: 10px;" />
+<form asp-controller="Movies" asp-action="Index" method="get" class="d-flex" style="max-width: 350px;">
+    <div class="input-group">  @*Reference: https://codeconvey.com/bootstrap-5-search-bar-with-icons/*@
+        <input 
+            type="search" 
+            class="form-control" 
+            name="searchString" 
+            placeholder="Search by title..." 
+            aria-label="Search by title"
+        />
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-search"></i>
+        </button>
+    </div>
 </form>
 
 <p>
-    <a asp-action="Create">Create a new record</a>
+    <a asp-action="Create"><button type="submit" class="btn btn-primary" style="margin-top: 10px;"><i class="bi bi-plus"></i>Add</button></a>
 </p>
 <table class="table">
     <thead>
@@ -53,7 +63,7 @@
                 @Html.DisplayFor(model => item.Genre)
             </td>
             <td>
-                    @item.Synopsis.Substring(0, 30) ...(<a asp-action="Details" asp-route-id="@item.Id">more</a>)
+                    @item.Synopsis.Substring(0, 30)<a asp-action="Details" asp-route-id="@item.Id">...more</a>
             </td>
             <td>
                 @Html.DisplayFor(model => item.Rating)
@@ -68,9 +78,9 @@
                 @Html.DisplayFor(model => item.ReleaseDate)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.Id"><button type="submit" class="btn btn-success"><i class="bi bi-pencil"></i></button></a> 
+                <a asp-action="Details" asp-route-id="@item.Id"><button type="submit" class="btn btn-secondary"><i class="bi bi-three-dots"></i></button></a> 
+                <a asp-action="Delete" asp-route-id="@item.Id"><button type="submit" class="btn btn-danger"><i class="bi bi-trash"></i></button> </a>
             </td>
         </tr>
 }
