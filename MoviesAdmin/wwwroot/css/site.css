@@ -1,5 +1,157 @@
+
+@import url('https://googleapis.com');
+
+
+:root {
+    --my-bg-dark: #363946;                          /*Google search engine AI was used to partially generate css styles, */
+    --my-muted-purple: #A09CB0;                     /*give me the names of the right classes and attributes to use, make suggestions, and */
+    --my-accent-gold: #C6A15B;                      /*give me links to find the best source of information to successfully achieve the design that I had planned.*/
+    --my-dark-red: #A44A3F;
+    --my-bright-red: #F24236;
+    /* Mapping palette variables to default Bootstrap properties */
+    --bs-body-bg: var(--my-bg-dark);
+    --bs-body-color: var(--my-accent-gold);
+    --bs-primary: var(--my-accent-gold);
+    /*setting the global body font to Source Sans 3 */
+    --bs-body-font-family: 'Source Sans 3', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+    /* Found the following font on Canva and downloaded it from https://www.1001fonts.com */
+@font-face {
+    font-family: 'Magnolia Script';
+    src: url('../fonts/Magnolia Script.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/*Headings use Magnolia Script: */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Magnolia Script', cursive;
+    color: var(--my-accent-gold);
+    letter-spacing: 1px;
+}
+h1 {
+    font-size: 3rem;
+}
+               /* applying Source Sans 3 to form inputs and standard tags: */
+body, p, span, label, input, select, textarea, table, .btn, footer, dd, dt {
+    font-family: 'Source Sans 3', sans-serif;
+}
+
+/* forces the saved data values next to attributes to be white */
+dd, .display-value {
+    color: #ffffff !important;
+    font-weight: 500;
+}
+/* Keeps the attribute labels themselves in your gold color or muted purple */
+dt, .display-label {
+    color: var(--my-accent-gold);
+    font-weight: 600;
+}
+
+
+/*force active typed text to be pure white across all Bootstrap form fields*/
+.form-control, .form-select, input {
+    color: #ffffff !important;
+    background-color: rgba(255, 255, 255, 0.05); /* Gives fields a subtle dark contrast */
+    border: 1px solid var(--my-muted-purple);
+}
+
+    /*keep the text white when typing or focusing inside fields */
+    .form-control:focus, .form-select:focus, input:focus {
+        color: #ffffff !important;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-color: var(--my-accent-gold);
+        box-shadow: 0 0 0 0.25rem rgba(198, 161, 91, 0.25); /* Subtle gold focus ring */
+    }
+
+    /*forces all placeholder text (including the search bar) to use the mute purple */
+    .form-control::placeholder, input::placeholder {
+        color: var(--my-muted-purple) !important;
+        opacity: 1; /* Standardizes across various browsers */
+    }
+
+.navbar, .bg-body-tertiary {
+    background-color: var(--my-bg-dark) !important;
+    border-bottom: 1px solid var(--my-muted-purple);
+    box-shadow: 0 4px 12px rgba(160, 156, 176, 0.4);
+}
+.navbar-brand, .nav-link {
+    color: var(--my-accent-gold) !important;
+}
+
+    .nav-link:hover, .nav-link:focus { /* adding hover effect */
+        color: var(--my-muted-purple) !important;
+    }
+
+/* regular footer text override: */
+footer, .footer, footer text, footer p, footer span, footer a {
+    color: var(--my-muted-purple) !important;
+}
+
+/* Primary Action Buttons override:*/
+.btn-primary {
+    background-color: var(--my-accent-gold) !important;
+    border-color: var(--my-accent-gold) !important;
+    color: var(--my-bg-dark) !important; /* High contrast text dark against gold background */
+    font-weight: 600;
+    transition: all 0.2s ease-in-out;
+}
+
+    .btn-primary:hover, .btn-primary:focus {
+        background-color: var(--my-muted-purple) !important;
+        border-color: var(--my-muted-purple) !important;
+        color: var(--my-bg-dark) !important;
+    }
+
+
+/*targetting all <a> tags*/
+a {
+    color: var(--my-accent-gold);
+    text-decoration: underline;
+}
+    a:hover {
+        color: var(--my-muted-purple);
+    }
+
+/*move index table of records: */
+.table {
+    --bs-table-bg: transparent;
+    --bs-table-color: var(--my-accent-gold);
+}
+
+    /* Fine separation line between table rows: */
+    .table > tbody > tr {
+        border-bottom: 1px solid var(--my-muted-purple) !important;
+    }
+
+
+.btn-danger {
+    background-color: var(--my-dark-red) !important;
+    border-color: var(--my-dark-red) !important;
+    color: #ffffff !important;
+    font-weight: 600;
+    transition: all 0.2s ease-in-out;
+}
+
+    .btn-danger:hover, .btn-danger:focus {
+        background-color: var(--my-bright-red) !important;
+        border-color: var(--my-bright-red) !important;
+        color: #ffffff !important;
+    }
+
+/*validation errors */
+.text-alert {
+    color: var(--my-bright-red) !important;
+}
+
+
+
+
+/*
+
+
 html {
-  font-size: 14px;
+  font-size: 20px;
 }
 
 @media (min-width: 768px) {
@@ -9,7 +161,7 @@ html {
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem var(--primary-hover), 0 0 0 0.25rem #258cfb;
 }
 
 html {
@@ -18,14 +170,14 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
 }
 
 .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
   text-align: end;
 }
 
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
-}
+    
+    text-align: start;
+}*/
