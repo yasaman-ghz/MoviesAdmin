@@ -1,10 +1,16 @@
-# Movies Admin App
-This is the administrative application that lets certain users perform CRUD operations on and interact with the database of a larger web application inspired by Rotten Tomatoes.
+# 🎬 Movies Admin Application
 
-## 😎Technology Stack
-This application will be developed with C# and the .NET Core MVC framework, JavaScript, CSS3, and HTML5. The IDE of choice is Visual Studio 2026.
+An administrative web application inspired by Rotten Tomatoes, built to manage movie records and user access permissions.
 
-## 🤔Features
-- Add and remove records about the movies on the database
-- Different access to the database for different users
-- Dynamic and interactive frontend
+⚠️ **Project Status: Work in Progress**
+This application is currently under active development. The frontend UI layout and core structures are being refined, with database integrations and authentication coming next.
+
+## 🛠️ Tech Stack
+* **Backend:** C# / .NET Core MVC
+* **Frontend:** HTML5, CSS3, JavaScript
+* **IDE:** Visual Studio
+
+## ✨ Key Planned Features
+* Full CRUD operations (Add, read, update, and remove movie records).
+* Role-based access control (Different database access for different users).
+* Dynamic and interactive user interface.
