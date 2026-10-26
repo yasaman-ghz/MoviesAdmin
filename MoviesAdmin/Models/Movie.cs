@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel.DataAnnotations;
 
 
 namespace MoviesAdmin.Models
@@ -22,7 +23,7 @@ namespace MoviesAdmin.Models
         [Required, Display(Prompt ="e.g. PG")]                                                      
         [RegularExpression(@"^(?i)(G|PG|PG-13|R|NC-17)$", ErrorMessage = "Please enter a valid movie rating (G, PG, PG-13, R, NC-17).")]
         public string Rating { get; set; } = string.Empty; // e.g., PG, PG-13, R
-
+ 
         public string ImageUrl { get; set; } = string.Empty; 
          
         [Required, Display(Name = "Runtime (minutes)")]

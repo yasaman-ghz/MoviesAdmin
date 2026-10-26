@@ -133,6 +133,21 @@ public class MoviesController : Controller
             return NotFound();
         }
 
+
+        if (coverPhoto != null)
+        {
+            // Make a unique filename (GUID.ext)
+            string extension = Path.GetExtension(coverPhoto!.FileName); // includes the leading dot, e.g. ".jpg"
+            string newFileName = $"{Guid.NewGuid()}{extension}";
+
+            // Upload file to Azure Storage
+            string url = await _azuriteStorageService.UploadFileAsync(coverPhoto, newFileName);
+
+            // Set the image URL in movie record            
+            movie.ImageUrl = url;
+
+        }
+
         if (ModelState.IsValid)
         {
             try
