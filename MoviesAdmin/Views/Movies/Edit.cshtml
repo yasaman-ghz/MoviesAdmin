@@ -31,11 +31,15 @@
                 <input asp-for="Rating" class="form-control" />
                 <span asp-validation-for="Rating" class="text-danger"></span>
             </div>
-            <div class="mb-3">
-                <label asp-for="ImageFilename" class="form-label"></label>
-                <input asp-for="ImageFilename" class="form-control" />
-                <span asp-validation-for="ImageFilename" class="text-danger"></span>
-            </div>
+
+            <input type="hidden" asp-for="ImageUrl" />
+
+            @* <div class="mb-3">
+                <label asp-for="ImageUrl" class="form-label"></label>
+                <input asp-for="ImageUrl" class="form-control" />
+                <span asp-validation-for="ImageUrl" class="text-danger"></span>
+            </div> *@
+
             <div class="mb-3">
                 <label asp-for="Runtime" class="form-label"></label>
                 <input asp-for="Runtime" class="form-control" />

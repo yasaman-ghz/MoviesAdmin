@@ -23,8 +23,7 @@ namespace MoviesAdmin.Models
         [RegularExpression(@"^(?i)(G|PG|PG-13|R|NC-17)$", ErrorMessage = "Please enter a valid movie rating (G, PG, PG-13, R, NC-17).")]
         public string Rating { get; set; } = string.Empty; // e.g., PG, PG-13, R
 
-        [Required, Display(Name = "Cover image", Prompt = "e.g. movie-name.jpg"), StringLength(60)]
-        public string ImageFilename { get; set; } = string.Empty; 
+        public string ImageUrl { get; set; } = string.Empty; 
          
         [Required, Display(Name = "Runtime (minutes)")]
         [Range(1, 300, ErrorMessage = "Please enter a runtime between 1 and 300 minutes.")]

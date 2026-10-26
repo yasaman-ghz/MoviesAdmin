@@ -1,14 +1,17 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MoviesAdmin.Models;
+using MoviesAdmin.Services;
 
 public class MoviesController : Controller
 {
     private readonly MoviesAdminContext _context;
+    private readonly AzuriteStorageService _azuriteStorageService;
 
-    public MoviesController(MoviesAdminContext context)
+    public MoviesController(MoviesAdminContext context, AzuriteStorageService azuriteStorageService)
     {
         _context = context;
+        _azuriteStorageService = azuriteStorageService;
     }
 
     // GET: MOVIES
@@ -64,15 +67,42 @@ public class MoviesController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Id,Title,Genre,Synopsis,Rating,ImageFilename,Runtime,ReleaseDate")] Movie movie)
+    public async Task<IActionResult> Create([Bind("Id,Title,Genre,Synopsis,Rating,Runtime,ReleaseDate")] Movie movie ,IFormFile coverPhoto)
     {
-        if (ModelState.IsValid)
+        // 1. Check if the file is missing
+        if (coverPhoto == null)
         {
-            _context.Add(movie);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            // The key MUST match the input's name attribute exactly ("coverPhoto")
+            ModelState.AddModelError("coverPhoto", "Image file is required.");
+        }
+
+        if (ModelState.IsValid) // validate input
+        {
+            //
+            // Upload file to Azure Stroage (after input validation occurs)
+            //
+
+            // Make a unique filename (GUID.ext)
+            string extension = Path.GetExtension(coverPhoto!.FileName); // includes the leading dot, e.g. ".jpg"
+            string newFileName = $"{Guid.NewGuid()}{extension}";
+
+            // Upload file to Azure Storage
+            string url = await _azuriteStorageService.UploadFileAsync(coverPhoto, newFileName);
+
+            // Set the image URL in movie record            
+            movie.ImageUrl = url;
+
+            //
+            // Save movie in database
+            //
+
+            _context.Add(movie); // add new movie to context (db)
+            await _context.SaveChangesAsync(); // save context changes in db
+
+            return RedirectToAction(nameof(Index)); // re-direct to Movies/Index page
         }
         return View(movie);
+
     }
 
     // GET: MOVIES/Edit/5
@@ -96,7 +126,7 @@ public class MoviesController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int? id, [Bind("Id,Title,Genre,Synopsis,Rating,ImageFilename,Runtime,ReleaseDate")] Movie movie)
+    public async Task<IActionResult> Edit(int? id, [Bind("Id,Title,Genre,Synopsis,Rating,ImageUrl,Runtime,ReleaseDate")] Movie movie, IFormFile? coverPhoto)
     {
         if (id != movie.Id)
         {

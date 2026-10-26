@@ -144,7 +144,13 @@ a {
     color: var(--my-bright-red) !important;
 }
 
+.index-thumbnail {
+    width: 100px;
+}
 
+.details-thumbnail {
+  width: 200px;
+}
 
 
 /*

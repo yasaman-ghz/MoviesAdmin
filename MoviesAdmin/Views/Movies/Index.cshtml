@@ -30,6 +30,10 @@
     <thead>
         <tr>
             <th>
+               @*this is just to have an extra column.*@
+            </th>
+            <th>
+            <th>
                 @Html.DisplayNameFor(model => model.Title)
             </th>
             <th>
@@ -41,9 +45,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Rating)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ImageFilename)
-            </th>
+            @* <th>
+                @Html.DisplayNameFor(model => model.ImageUrl)
+            </th> *@
             <th>
                 @Html.DisplayNameFor(model => model.Runtime)
             </th>
@@ -57,6 +61,10 @@
 @foreach (var item in Model) {
         <tr>
             <td>
+                <img src="@item.ImageUrl" alt="Cover Photo" class="index-thumbnail" />
+            </td>
+            <td>
+            <td>
                 @Html.DisplayFor(model => item.Title)
             </td>
             <td>
@@ -68,9 +76,9 @@
             <td>
                 @Html.DisplayFor(model => item.Rating)
             </td>
-            <td>
-                @Html.DisplayFor(model => item.ImageFilename)
-            </td>
+            @* <td>
+                @Html.DisplayFor(model => item.ImageUrl)
+            </td> *@
             <td>
                 @Html.DisplayFor(model => item.Runtime)
             </td>

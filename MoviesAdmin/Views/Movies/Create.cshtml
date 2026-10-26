@@ -10,7 +10,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <div class="mb-3">
@@ -37,10 +37,18 @@
                 <span asp-validation-for="Rating" class="text-danger"></span>
             </div>
 
+                <input type="hidden" asp-for="ImageUrl" />
+
+            @* <div class="mb-3">
+                <label asp-for="ImageUrl" class="form-label"></label>
+                <input asp-for="ImageUrl" class="form-control"/>
+                <span asp-validation-for="ImageUrl" class="text-danger"></span>
+            </div> *@
+
             <div class="mb-3">
-                <label asp-for="ImageFilename" class="form-label"></label>
-                <input asp-for="ImageFilename" class="form-control"/>
-                <span asp-validation-for="ImageFilename" class="text-danger"></span>
+                <label for="coverPhoto" class="form-label">Cover Photo</label><br />
+                <input type="file" name="coverPhoto" id="coverPhoto" class="form-control" />
+                @Html.ValidationMessage("coverPhoto", new { @class = "text-danger"})
             </div>
 
             <div class="mb-3">
