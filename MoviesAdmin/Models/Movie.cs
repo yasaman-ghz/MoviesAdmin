@@ -12,18 +12,34 @@ namespace MoviesAdmin.Models
                                                                         // https://learn.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.displayattribute.prompt?view=net-10.0
         public string Title { get; set; } = string.Empty;               //Regular Expressions References:
                                                                         // https://learn.microsoft.com/en-us/dotnet/standard/base-types/character-classes-in-regular-expressions
-        [Required, StringLength(50)]                                    // https://learn.microsoft.com/en-us/dotnet/standard/base-types/regular-expressions
-        [RegularExpression(@"^[^,\s]+$", ErrorMessage = "Please only one genre and no spaces or commas.")]
-        public string Genre { get; set; } = string.Empty;
+        //[Required, StringLength(50)]                                  // https://learn.microsoft.com/en-us/dotnet/standard/base-types/regular-expressions
+        //[RegularExpression(@"^[^,\s]+$", ErrorMessage = "Please only one genre and no spaces or commas.")]
+        //public string Genre { get; set; } = string.Empty;
+
+        // foreign key
+        [Display(Name = "Genre")]
+        public int GenreId { get; set; }
+
+        // navigation property
+        [ValidateNever]
+        public Genre Genre  { get; set; } = null!;
 
         [MinLength(30, ErrorMessage ="Minimum 30 characters required.")]
         [MaxLength(700, ErrorMessage ="Maximum 700 characters accepted.")]
         public string Synopsis { get; set; } = string.Empty;
 
-        [Required, Display(Prompt ="e.g. PG")]                                                      
-        [RegularExpression(@"^(?i)(G|PG|PG-13|R|NC-17)$", ErrorMessage = "Please enter a valid movie rating (G, PG, PG-13, R, NC-17).")]
-        public string Rating { get; set; } = string.Empty; // e.g., PG, PG-13, R
- 
+        //[Required, Display(Prompt ="e.g. PG")]                                                      
+        //[RegularExpression(@"^(?i)(G|PG|PG-13|R|NC-17)$", ErrorMessage = "Please enter a valid movie rating (G, PG, PG-13, R, NC-17).")]
+        //public string Rating { get; set; } = string.Empty; // e.g., PG, PG-13, R
+
+        // foreign key
+        [Display(Name = "Audience Rating")]
+        public int AudienceRatingId { get; set; }
+
+        // navigation property
+        [ValidateNever]
+        public AudienceRating AudienceRating { get; set; } = null!;
+
         public string ImageUrl { get; set; } = string.Empty; 
          
         [Required, Display(Name = "Runtime (minutes)")]

@@ -1,8 +1,15 @@
-﻿namespace MoviesAdmin.Models
+﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+
+namespace MoviesAdmin.Models
 {
     public class Genre
     {
-        int Id { get; set; }
-        string Title { get; set; } = string.Empty;
+        public int Id { get; set; } //primary key
+        [ValidateNever]
+        public List<Movie> Movies { get; set; } = new List<Movie>(); //navigation property
+
+        [Required]
+        public string Title { get; set; } = string.Empty;
     }
 }

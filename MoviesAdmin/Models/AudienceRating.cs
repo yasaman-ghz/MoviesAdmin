@@ -1,8 +1,16 @@
-﻿namespace MoviesAdmin.Models
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel.DataAnnotations;
+
+namespace MoviesAdmin.Models
 {
     public class AudienceRating
     {
-        int Id { get; set; }
-        string Title { get; set; } = string.Empty;
+        public int Id { get; set; } // primary key
+
+        [ValidateNever]
+        public List<Movie> Movies { get; set; } = new List<Movie>(); // navigation property
+
+        [Required]
+        public string Title { get; set; } = string.Empty;
     }
 }

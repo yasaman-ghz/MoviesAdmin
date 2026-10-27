@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MoviesAdmin.Models;
 using MoviesAdmin.Services;
@@ -18,7 +19,12 @@ public class MoviesController : Controller
     public async Task<IActionResult> Index()
     {     //Listing all movies with the newest shown on top of the list
           //Reference: https://www.learnentityframeworkcore.com/querying/linq-queries
-        return View(await _context.Movie.OrderByDescending(Movie=> Movie.ReleaseDate).ToListAsync());
+        return View(await _context
+            .Movie
+            .Include(m => m.Genre)
+            .Include(m => m.AudienceRating)
+            .OrderByDescending(Movie=> Movie.ReleaseDate)
+            .ToListAsync());
     }
 
     // New controller method to search for movies by title
@@ -32,7 +38,11 @@ public class MoviesController : Controller
         if (!string.IsNullOrEmpty(searchString))
         {
             movies = movies.Where(m => m.Title.Contains(searchString));
-            return View(await movies.OrderByDescending(Movie => Movie.ReleaseDate).ToListAsync());
+            return View(await movies
+            .Include(m => m.Genre)
+            .Include(m => m.AudienceRating)
+            .OrderByDescending(Movie => Movie.ReleaseDate)
+            .ToListAsync());
         }
 
         return View(await _context.Movie.OrderByDescending(Movie => Movie.ReleaseDate).ToListAsync());
@@ -47,6 +57,8 @@ public class MoviesController : Controller
         }
 
         var movie = await _context.Movie
+            .Include(m => m.Genre)
+            .Include(m => m.AudienceRating)
             .FirstOrDefaultAsync(m => m.Id == id);
         if (movie == null)
         {
@@ -101,6 +113,11 @@ public class MoviesController : Controller
 
             return RedirectToAction(nameof(Index)); // re-direct to Movies/Index page
         }
+
+        //// create a select list for the categories
+        //var genres = _context.Genre.ToList();
+        //ViewBag.GenreId = new SelectList(genres, "Id", "Title");
+
         return View(movie);
 
     }
