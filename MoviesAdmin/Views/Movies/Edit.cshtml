@@ -12,26 +12,26 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <input type="hidden" asp-for="ImageUrl" />
+            <input type="hidden" asp-for="GenreId" />
+            <input type="hidden" asp-for="AudienceRatingId" />
             <div class="mb-3">
                 <label asp-for="Title" class="form-label"></label>
                 <input asp-for="Title" class="form-control" />
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
-            @* <div class="mb-3">
-                <label asp-for="Genre" class="form-label"></label>
-                <input asp-for="Genre" class="form-control" />
-                <span asp-validation-for="Genre" class="text-danger"></span>
-            </div> *@
+            <div class="mb-3">
+                <label asp-for="GenreId" class="control-label"></label>
+                <select asp-for="GenreId" class="form-select" asp-items="ViewBag.GenreId"></select>
+            </div>
             <div class="mb-3">
                 <label asp-for="Synopsis" class="form-label"></label>
                 <textarea style="resize: none;" asp-for="Synopsis" class="form-control"></textarea>     @*Reference: https://getbootstrap.com/docs/5.3/forms/form-control/*@
                 <span asp-validation-for="Synopsis" class="text-danger"></span>
             </div>
-            @* <div class="mb-3">
-                <label asp-for="Rating" class="form-label"></label>
-                <input asp-for="Rating" class="form-control" />
-                <span asp-validation-for="Rating" class="text-danger"></span>
-            </div> *@
+           <div class="mb-3">
+                <label asp-for="AudienceRatingId" class="control-label"></label>
+                <select asp-for="AudienceRatingId" class="form-select" asp-items="ViewBag.AudienceRatingId"></select>
+            </div>
 
             <div class="mb-3">   
                 <label for="coverPhoto" class="form-label">Current Cover Photo:</label><br />

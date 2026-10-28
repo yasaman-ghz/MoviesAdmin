@@ -36,18 +36,15 @@
             <th>
                 @Html.DisplayNameFor(model => model.Title)
             </th>
-            @* <th>
+            <th>
                 @Html.DisplayNameFor(model => model.Genre)
-            </th> *@
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.Synopsis)
             </th>
-            @* <th>
-                @Html.DisplayNameFor(model => model.Rating)
-            </th> *@
-            @* <th>
-                @Html.DisplayNameFor(model => model.ImageUrl)
-            </th> *@
+            <th>
+                @Html.DisplayNameFor(model => model.AudienceRating)
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.Runtime)
             </th>
@@ -67,18 +64,15 @@
             <td>
                 @Html.DisplayFor(model => item.Title)
             </td>
-            @* <td>
-                @Html.DisplayFor(model => item.Genre)
-            </td> *@
+            <td>
+                @Html.DisplayFor(model => item.Genre.Title)
+            </td>
             <td>
                     @item.Synopsis.Substring(0, 30)<a asp-action="Details" asp-route-id="@item.Id">...more</a>
             </td>
-            @* <td>
-                @Html.DisplayFor(model => item.Rating)
-            </td> *@
-            @* <td>
-                @Html.DisplayFor(model => item.ImageUrl)
-            </td> *@
+            <td>
+                @Html.DisplayFor(model => item.AudienceRating.Title)
+            </td>
             <td>
                 @Html.DisplayFor(model => item.Runtime)
             </td>
