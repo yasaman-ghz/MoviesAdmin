@@ -24,6 +24,10 @@ namespace MoviesAdmin.Models
         [ValidateNever]
         public Genre Genre  { get; set; } = null!;
 
+        // navigation property for related CriticReviews
+        [ValidateNever]
+        public List<CriticReview> CriticReviews { get; set; } = new List<CriticReview>();
+
         [MinLength(30, ErrorMessage ="Minimum 30 characters required.")]
         [MaxLength(700, ErrorMessage ="Maximum 700 characters accepted.")]
         public string Synopsis { get; set; } = string.Empty;

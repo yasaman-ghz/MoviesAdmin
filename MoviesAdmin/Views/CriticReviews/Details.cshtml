@@ -1,0 +1,26 @@
+﻿@model MoviesAdmin.Models.CriticReview
+@{
+    ViewData["Title"] = "Critic Review Details";
+}
+
+<h1>Critic Review Details</h1>
+<hr />
+<dl class="row">        
+    <dt class="col-sm-3">Movie</dt>
+    <dd class="col-sm-9">@Model.Movie?.Title</dd>
+    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Title)</dt>
+    <dd class="col-sm-9">@Html.DisplayFor(model => model.Title)</dd>
+    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Description)</dt>
+    <dd class="col-sm-9">@Html.DisplayFor(model => model.Description)</dd>
+    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Rating)</dt>
+    <dd class="col-sm-9">@Html.DisplayFor(model => model.Rating)</dd>
+    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.IsPublished)</dt>
+    <dd class="col-sm-9">@Html.DisplayFor(model => model.IsPublished)</dd>
+    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.CreatedBy)</dt>
+    <dd class="col-sm-9">@Html.DisplayFor(model => model.CreatedBy)</dd>
+    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.CreatedDate)</dt>
+    <dd class="col-sm-9">@Html.DisplayFor(model => model.CreatedDate)</dd>
+</dl>
+
+<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+<a asp-action="Index" class="btn btn-secondary">Back to List</a>
