@@ -45,7 +45,6 @@ namespace MoviesAdmin.Services
             return blobClient.Uri.ToString();
         }
 
-        // Requirement C: Deletes the previously uploaded cover photo from the storage service
         public async Task DeleteFileAsync(string fileUrl)
         {
             if (string.IsNullOrEmpty(fileUrl))
@@ -57,18 +56,16 @@ namespace MoviesAdmin.Services
             {
                 var containerClient = _blobServiceClient.GetBlobContainerClient(containerName);
 
-                // Parse out the filename accurately from the absolute storage URI
                 var uri = new Uri(fileUrl);
                 string filename = Path.GetFileName(uri.LocalPath);
 
                 var blobClient = containerClient.GetBlobClient(filename);
 
-                // Erase the file blob along with any snapshots it possesses
                 await blobClient.DeleteIfExistsAsync(DeleteSnapshotsOption.IncludeSnapshots);
             }
             catch (Exception)
             {
-                // Soft-catch failures to prevent application crashes if a file was manually scrubbed
+               
             }
         }
     }

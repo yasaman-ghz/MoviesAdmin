@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/MoviesAdmin.styles.css" asp-append-version="true" />
-    <link rel="stylesheet" href="https://jsdelivr.net">
+    <link rel="stylesheet" href="https://cloudflare.com">
 </head>
 <body>
     <header>
@@ -26,7 +26,7 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <!-- Left Side Navbar Links -->
+                  
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
@@ -36,12 +36,12 @@
                         </li>
                         @if (User.IsInRole("administrator") || User.IsInRole("critic"))
                         {
-                            <!-- Both Roles can see All Movies -->
+                          
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Movies" asp-action="Index">All Movies</a>
                             </li>
                             
-                            <!-- Administrator Specific Links -->
+                       
                             @if (User.IsInRole("administrator"))
                             {
                                 <li class="nav-item">
@@ -51,8 +51,7 @@
                                     <a class="nav-link text-dark" asp-area="" asp-controller="AudienceRatings" asp-action="Index">Audience Ratings</a>
                                 </li>
                             }
-                            
-                            <!-- Critic Specific Links -->
+                       
                             @if (User.IsInRole("critic"))
                             {
                                 <li class="nav-item">
@@ -61,8 +60,7 @@
                             }
                         }
                     </ul>
-                    
-                    <!-- Right Side Navbar Links -->
+              
                     <ul class="navbar-nav">
                         @if (User.Identity.IsAuthenticated)
                         {

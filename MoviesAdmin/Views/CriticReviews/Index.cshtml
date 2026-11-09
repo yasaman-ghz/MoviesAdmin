@@ -12,7 +12,7 @@
             <th>@Html.DisplayNameFor(model => model.Title)</th>
             <th>@Html.DisplayNameFor(model => model.Rating)</th>
             <th>@Html.DisplayNameFor(model => model.IsPublished)</th>
-            <th>@Html.DisplayNameFor(model => model.CreatedBy)</th>
+            @* <th>@Html.DisplayNameFor(model => model.CreatedBy)</th> *@
             <th>@Html.DisplayNameFor(model => model.CreatedDate)</th>
             <th></th>
         </tr>
@@ -29,7 +29,7 @@
                         @(item.IsPublished ? "Published" : "Draft")
                     </span>
                 </td>
-                <td>@Html.DisplayFor(modelItem => item.CreatedBy)</td>
+                @* <td>@Html.DisplayFor(modelItem => item.CreatedBy)</td> *@
                 <td>@Html.DisplayFor(modelItem => item.CreatedDate)</td>
                 <td>
                     <!-- Details is always visible to the owner critic -->
