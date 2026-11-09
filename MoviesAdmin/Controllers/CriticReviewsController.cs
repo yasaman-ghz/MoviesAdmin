@@ -6,7 +6,7 @@ using MoviesAdmin.Models;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using MoviesAdmin; // Explicitly imports your ClaimsPrincipalExtensions class
+using MoviesAdmin; 
 
 [Authorize(Roles = "critic")]
 public class CriticReviewsController : Controller
@@ -29,7 +29,7 @@ public class CriticReviewsController : Controller
     // GET: CriticReviews
     public async Task<IActionResult> Index()
     {
-        // Requirement 14: Critics can only view their own movie reviews
+       
         var criticReviews = await _context.CriticReview
             .Include(review => review.Movie)
             .Where(review => review.CreatedBy == _userId)
@@ -47,7 +47,7 @@ public class CriticReviewsController : Controller
             return NotFound();
         }
 
-        // Secure boundary routing checks limited strictly to the authenticated owner
+    
         var criticReview = await _context.CriticReview
             .Include(review => review.Movie)
             .FirstOrDefaultAsync(m => m.Id == id && m.CreatedBy == _userId);
@@ -61,7 +61,6 @@ public class CriticReviewsController : Controller
     }
 
     // GET: CriticReviews/Create?movieId=5
-    // Requirement B: Critic adds a review directly from the Movies Details view layer parameters
     public async Task<IActionResult> Create(int? movieId)
     {
         if (movieId == null)
@@ -75,7 +74,6 @@ public class CriticReviewsController : Controller
             return NotFound();
         }
 
-        // Requirement 14: Restrict critic submissions to exactly one entry per movie asset record
         bool alreadyReviewed = await _context.CriticReview
             .AnyAsync(r => r.MovieId == movieId && r.CreatedBy == _userId);
 
@@ -101,10 +99,10 @@ public class CriticReviewsController : Controller
     {
         criticReview.CreatedBy = _userId;
 
-        // Converts current standard system datetime values safely into the required DateOnly struct model parameters
+        //Converts current standard system datetime values into the required DateOnly
         criticReview.CreatedDate = DateOnly.FromDateTime(DateTime.Now);
 
-        // Double check review limit rule constraint
+    
         bool alreadyReviewed = await _context.CriticReview
             .AnyAsync(r => r.MovieId == criticReview.MovieId && r.CreatedBy == _userId);
 
@@ -141,7 +139,7 @@ public class CriticReviewsController : Controller
             return NotFound();
         }
 
-        // Requirement 7: Cannot edit a published movie review
+      
         if (criticReview.IsPublished)
         {
             return Forbid();
@@ -169,7 +167,7 @@ public class CriticReviewsController : Controller
             return NotFound();
         }
 
-        // Secure state checkpoint locking rule check execution inside server-side validations
+   
         if (existingReview.IsPublished)
         {
             return Forbid();
@@ -217,7 +215,6 @@ public class CriticReviewsController : Controller
             return NotFound();
         }
 
-        // Requirement 7: Cannot delete a published movie review
         if (criticReview.IsPublished)
         {
             return Forbid();

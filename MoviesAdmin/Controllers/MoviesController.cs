@@ -70,7 +70,6 @@ public class MoviesController : Controller
             return NotFound();
         }
 
-        // Requirement 9: Count only published reviews for this movie
         ViewBag.ReviewsCount = await _context.CriticReview
             .CountAsync(r => r.MovieId == id && r.IsPublished);
 
@@ -153,7 +152,7 @@ public class MoviesController : Controller
             {
                 if (coverPhoto != null)
                 {
-                    // Requirement C: Delete the previous cover photo from service container
+                
                     if (!string.IsNullOrEmpty(movie.ImageUrl))
                     {
                         await _azuriteStorageService.DeleteFileAsync(movie.ImageUrl);
@@ -218,7 +217,7 @@ public class MoviesController : Controller
         var movie = await _context.Movie.FindAsync(id);
         if (movie != null)
         {
-            // Clean up file storage on deletion
+         
             if (!string.IsNullOrEmpty(movie.ImageUrl))
             {
                 await _azuriteStorageService.DeleteFileAsync(movie.ImageUrl);
