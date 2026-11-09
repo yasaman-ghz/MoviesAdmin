@@ -1,15 +1,22 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MoviesAdmin.Models;
 using MoviesAdmin.Services;
+using System;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
+[Authorize]
 public class MoviesController : Controller
 {
     private readonly MoviesAdminContext _context;
-    private readonly AzuriteStorageService _azuriteStorageService;
+    private readonly IAzuriteStorageService _azuriteStorageService;
 
-    public MoviesController(MoviesAdminContext context, AzuriteStorageService azuriteStorageService)
+    public MoviesController(MoviesAdminContext context, IAzuriteStorageService azuriteStorageService)
     {
         _context = context;
         _azuriteStorageService = azuriteStorageService;
@@ -17,35 +24,31 @@ public class MoviesController : Controller
 
     // GET: MOVIES
     public async Task<IActionResult> Index()
-    {     //Listing all movies with the newest shown on top of the list
-          //Reference: https://www.learnentityframeworkcore.com/querying/linq-queries
-        return View(await _context
-            .Movie
+    {
+        return View(await _context.Movie
             .Include(m => m.Genre)
             .Include(m => m.AudienceRating)
-            .OrderByDescending(Movie=> Movie.ReleaseDate)
+            .AsSplitQuery()
+            .OrderByDescending(m => m.ReleaseDate)
             .ToListAsync());
     }
 
-    // New controller method to search for movies by title
     // GET: MOVIES/Search 
-    public async Task<IActionResult> Search(string searchString)//passing string from the form                 
-                                                                                                     
+    public async Task<IActionResult> Search(string searchString)
     {
-        //Search bar reference: https://www.youtube.com/watch?v=5-fVog2hd5c
-        var movies = from m in _context.Movie
-                     select m;
+        var movies = _context.Movie.AsQueryable();
         if (!string.IsNullOrEmpty(searchString))
         {
             movies = movies.Where(m => m.Title.Contains(searchString));
             return View(await movies
-            .Include(m => m.Genre)
-            .Include(m => m.AudienceRating)
-            .OrderByDescending(Movie => Movie.ReleaseDate)
-            .ToListAsync());
+                .Include(m => m.Genre)
+                .Include(m => m.AudienceRating)
+                .AsSplitQuery()
+                .OrderByDescending(m => m.ReleaseDate)
+                .ToListAsync());
         }
 
-        return View(await _context.Movie.OrderByDescending(Movie => Movie.ReleaseDate).ToListAsync());
+        return View(await _context.Movie.OrderByDescending(m => m.ReleaseDate).ToListAsync());
     }
 
     // GET: MOVIES/Details/5
@@ -59,82 +62,62 @@ public class MoviesController : Controller
         var movie = await _context.Movie
             .Include(m => m.Genre)
             .Include(m => m.AudienceRating)
+            .AsSplitQuery()
             .FirstOrDefaultAsync(m => m.Id == id);
+
         if (movie == null)
         {
             return NotFound();
         }
 
+        // Requirement 9: Count only published reviews for this movie
+        ViewBag.ReviewsCount = await _context.CriticReview
+            .CountAsync(r => r.MovieId == id && r.IsPublished);
+
         return View(movie);
     }
 
     // GET: MOVIES/Create
+    [Authorize(Roles = "administrator")]
     public IActionResult Create()
     {
-        // create a select list for the genres
-        var genres = _context.Genre.ToList();
-        ViewBag.GenreId = new SelectList(genres, "Id", "Title");
-
-        // create a select list for the audience ratings
-        var audienceRatings = _context.AudienceRating.ToList();
-        ViewBag.AudienceRatingId = new SelectList(audienceRatings, "Id", "Title");
-
+        ViewBag.GenreId = new SelectList(_context.Genre, "Id", "Title");
+        ViewBag.AudienceRatingId = new SelectList(_context.AudienceRating, "Id", "Title");
         return View();
     }
 
     // POST: MOVIES/Create
-    // To protect from overposting attacks, enable the specific properties you want to bind to.
-    // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Id,Title,GenreId,Synopsis,AudienceRatingId,Runtime,ReleaseDate")] Movie movie ,IFormFile coverPhoto)
+    [Authorize(Roles = "administrator")]
+    public async Task<IActionResult> Create([Bind("Id,Title,GenreId,Synopsis,AudienceRatingId,Runtime,ReleaseDate")] Movie movie, IFormFile coverPhoto)
     {
-        // 1. Check if the file is missing
         if (coverPhoto == null)
         {
-            // The key MUST match the input's name attribute exactly ("coverPhoto")
             ModelState.AddModelError("coverPhoto", "Image file is required.");
         }
 
-        if (ModelState.IsValid) // validate input
+        if (ModelState.IsValid)
         {
-            //
-            // Upload file to Azure Stroage (after input validation occurs)
-            //
-
-            // Make a unique filename (GUID.ext)
-            string extension = Path.GetExtension(coverPhoto!.FileName); // includes the leading dot, e.g. ".jpg"
+            string extension = Path.GetExtension(coverPhoto!.FileName);
             string newFileName = $"{Guid.NewGuid()}{extension}";
 
-            // Upload file to Azure Storage
             string url = await _azuriteStorageService.UploadFileAsync(coverPhoto, newFileName);
-
-            // Set the image URL in movie record            
             movie.ImageUrl = url;
 
-            //
-            // Save movie in database
-            //
+            _context.Add(movie);
+            await _context.SaveChangesAsync();
 
-            _context.Add(movie); // add new movie to context (db)
-            await _context.SaveChangesAsync(); // save context changes in db
-
-            return RedirectToAction(nameof(Index)); // re-direct to Movies/Index page
+            return RedirectToAction(nameof(Index));
         }
 
-        // create a select list for the genres
-        var genres = _context.Genre.ToList();
-        ViewBag.GenreId = new SelectList(genres, "Id", "Title");
-
-        // create a select list for the audience ratings
-        var audienceRatings = _context.AudienceRating.ToList();
-        ViewBag.AudienceRatingId = new SelectList(audienceRatings, "Id", "Title");
-
+        ViewBag.GenreId = new SelectList(_context.Genre, "Id", "Title", movie.GenreId);
+        ViewBag.AudienceRatingId = new SelectList(_context.AudienceRating, "Id", "Title", movie.AudienceRatingId);
         return View(movie);
-
     }
 
     // GET: MOVIES/Edit/5
+    [Authorize(Roles = "administrator")]
     public async Task<IActionResult> Edit(int? id)
     {
         if (id == null)
@@ -148,22 +131,15 @@ public class MoviesController : Controller
             return NotFound();
         }
 
-        // create a select list for the genres
-        var genres = _context.Genre.ToList();
-        ViewBag.GenreId = new SelectList(genres, "Id", "Title");
-
-        // create a select list for the audience ratings
-        var audienceRatings = _context.AudienceRating.ToList();
-        ViewBag.AudienceRatingId = new SelectList(audienceRatings, "Id", "Title");
-
+        ViewBag.GenreId = new SelectList(_context.Genre, "Id", "Title", movie.GenreId);
+        ViewBag.AudienceRatingId = new SelectList(_context.AudienceRating, "Id", "Title", movie.AudienceRatingId);
         return View(movie);
     }
 
     // POST: MOVIES/Edit/5
-    // To protect from overposting attacks, enable the specific properties you want to bind to.
-    // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "administrator")]
     public async Task<IActionResult> Edit(int? id, [Bind("Id,Title,GenreId,Synopsis,AudienceRatingId,ImageUrl,Runtime,ReleaseDate")] Movie movie, IFormFile? coverPhoto)
     {
         if (id != movie.Id)
@@ -171,25 +147,24 @@ public class MoviesController : Controller
             return NotFound();
         }
 
-
-        if (coverPhoto != null)
-        {
-            // Make a unique filename (GUID.ext)
-            string extension = Path.GetExtension(coverPhoto!.FileName); // includes the leading dot, e.g. ".jpg"
-            string newFileName = $"{Guid.NewGuid()}{extension}";
-
-            // Upload file to Azure Storage
-            string url = await _azuriteStorageService.UploadFileAsync(coverPhoto, newFileName);
-
-            // Set the image URL in movie record            
-            movie.ImageUrl = url;
-
-        }
-
         if (ModelState.IsValid)
         {
             try
             {
+                if (coverPhoto != null)
+                {
+                    // Requirement C: Delete the previous cover photo from service container
+                    if (!string.IsNullOrEmpty(movie.ImageUrl))
+                    {
+                        await _azuriteStorageService.DeleteFileAsync(movie.ImageUrl);
+                    }
+
+                    string extension = Path.GetExtension(coverPhoto.FileName);
+                    string newFileName = $"{Guid.NewGuid()}{extension}";
+                    string url = await _azuriteStorageService.UploadFileAsync(coverPhoto, newFileName);
+                    movie.ImageUrl = url;
+                }
+
                 _context.Update(movie);
                 await _context.SaveChangesAsync();
             }
@@ -206,18 +181,14 @@ public class MoviesController : Controller
             }
             return RedirectToAction(nameof(Index));
         }
-        // create a select list for the genres
-        var genres = _context.Genre.ToList();
-        ViewBag.GenreId = new SelectList(genres, "Id", "Title");
 
-        // create a select list for the audience ratings
-        var audienceRatings = _context.AudienceRating.ToList();
-        ViewBag.AudienceRatingId = new SelectList(audienceRatings, "Id", "Title");
-
+        ViewBag.GenreId = new SelectList(_context.Genre, "Id", "Title", movie.GenreId);
+        ViewBag.AudienceRatingId = new SelectList(_context.AudienceRating, "Id", "Title", movie.AudienceRatingId);
         return View(movie);
     }
 
     // GET: MOVIES/Delete/5
+    [Authorize(Roles = "administrator")]
     public async Task<IActionResult> Delete(int? id)
     {
         if (id == null)
@@ -226,6 +197,9 @@ public class MoviesController : Controller
         }
 
         var movie = await _context.Movie
+            .Include(m => m.Genre)
+            .Include(m => m.AudienceRating)
+            .AsSplitQuery()
             .FirstOrDefaultAsync(m => m.Id == id);
         if (movie == null)
         {
@@ -238,11 +212,17 @@ public class MoviesController : Controller
     // POST: MOVIES/Delete/5
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeleteConfirmed(int? id)     
+    [Authorize(Roles = "administrator")]
+    public async Task<IActionResult> DeleteConfirmed(int? id)
     {
         var movie = await _context.Movie.FindAsync(id);
         if (movie != null)
         {
+            // Clean up file storage on deletion
+            if (!string.IsNullOrEmpty(movie.ImageUrl))
+            {
+                await _azuriteStorageService.DeleteFileAsync(movie.ImageUrl);
+            }
             _context.Movie.Remove(movie);
         }
 

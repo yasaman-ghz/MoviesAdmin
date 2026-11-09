@@ -3,36 +3,38 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MoviesAdmin.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("MoviesAdminContext") ?? throw new InvalidOperationException("Connection string 'MoviesAdminContext' not found.");
 
 
 //1.Store your Auth0 secrets in User Secrets!
-
-//2.When updating Program.cs, include the following code snippet:
-builder.Services.Configure<OpenIdConnectOptions>(Auth0Constants.AuthenticationScheme, options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        NameClaimType = "name",
-        RoleClaimType = "https://localhost:7018/roles" // change to your app's domain
-    };
-});
-
-builder.Services.AddDbContext<MoviesAdminContext>(options => options.UseSqlServer(connectionString));
-
-// Add services to the container.
-builder.Services.AddControllersWithViews();
-
-//Rgister the AzuriteStorageService with the DI container
-builder.Services.AddScoped<AzuriteStorageService>();
-
 builder.Services.AddAuth0WebAppAuthentication(options =>
 {
     options.Domain = builder.Configuration["Auth0:Domain"];
     options.ClientId = builder.Configuration["Auth0:ClientId"];
     options.ClientSecret = builder.Configuration["Auth0:ClientSecret"];
 });
+//2.When updating Program.cs, include the following code snippet:
+builder.Services.Configure<OpenIdConnectOptions>(Auth0Constants.AuthenticationScheme, options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        NameClaimType = "name",
+        RoleClaimType = "https://localhost:7018/roles/" // change to your app's domain
+    };
+});
+
+builder.Services.AddDbContext<MoviesAdminContext>(options => options.UseSqlServer(connectionString));
+
+
+
+// Add services to the container.
+builder.Services.AddControllersWithViews();
+
+//Rgister the AzuriteStorageService with the DI container
+builder.Services.AddSingleton<IAzuriteStorageService, AzuriteStorageService>();
+
 
 var app = builder.Build();
 

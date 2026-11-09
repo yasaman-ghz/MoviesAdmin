@@ -7,9 +7,9 @@
 <h1>All movies:</h1>
 
 
-@*Search bar reference: https://www.youtube.com/watch?v=5-fVog2hd5c*@
+@*Search bar reference: https://youtube.com*@
 <form asp-controller="Movies" asp-action="Search" method="get" class="d-flex" style="max-width: 350px;">
-    <div class="input-group">  @*Reference: https://codeconvey.com/bootstrap-5-search-bar-with-icons/*@
+    <div class="input-group">  @*Reference: https://codeconvey.com*@
         <input 
             type="search" 
             class="form-control" 
@@ -23,9 +23,12 @@
     </div>
 </form>
 
-<p>
-    <a asp-action="Create"><button type="submit" class="btn btn-primary" style="margin-top: 10px;"><i class="bi bi-plus"></i>Add</button></a>
-</p>
+@if (User.IsInRole("administrator"))
+{
+    <p>
+        <a asp-action="Create"><button type="submit" class="btn btn-primary" style="margin-top: 10px;"><i class="bi bi-plus"></i>Add</button></a>
+    </p>
+}
 <table class="table">
     <thead>
         <tr>
@@ -80,9 +83,16 @@
                 @Html.DisplayFor(model => item.ReleaseDate)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id"><button type="submit" class="btn btn-success"><i class="bi bi-pencil"></i></button></a> 
-                <a asp-action="Details" asp-route-id="@item.Id"><button type="submit" class="btn btn-secondary"><i class="bi bi-three-dots"></i></button></a> 
-                <a asp-action="Delete" asp-route-id="@item.Id"><button type="submit" class="btn btn-danger"><i class="bi bi-trash"></i></button> </a>
+                @if (User.IsInRole("administrator"))
+                {
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-success"><i class="bi bi-pencil"></i></a> 
+                }
+                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-secondary"><i class="bi bi-three-dots"></i></a> 
+                @if (User.IsInRole("administrator"))
+                {
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger"><i class="bi bi-trash"></i></a>
+                }
+
             </td>
         </tr>
 }

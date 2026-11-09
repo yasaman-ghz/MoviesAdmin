@@ -6,10 +6,8 @@
 
 <h1>Results:</h1>
 
-
-@*Search bar reference: https://www.youtube.com/watch?v=5-fVog2hd5c*@
-<form asp-controller="Movies" asp-action="Search" method="get" class="d-flex" style="max-width: 350px;">
-    <div class="input-group">  @*Reference: https://codeconvey.com/bootstrap-5-search-bar-with-icons/*@
+<form asp-controller="Movies" asp-action="Search" method="get" class="d-flex mb-3" style="max-width: 350px;">
+    <div class="input-group">
         <input 
             type="search" 
             class="form-control" 
@@ -24,64 +22,58 @@
 </form>
 
 <p>
-<a asp-action="Index"><button type="submit" class="btn btn-primary" style="margin-top: 10px;">Back to all</button></a>
+    <a asp-action="Index" class="btn btn-primary">Back to all</a>
 </p>
 
-<table class="table">
+<table class="table align-middle">
     <thead>
         <tr>
-             <th>
-               @*this is just to have an extra column.*@
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Genre)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Synopsis)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AudienceRating)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Runtime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ReleaseDate)
-            </th>
-            <th></th>
+            <th style="width: 100px;">Poster</th>
+            <th>@Html.DisplayNameFor(model => model.Title)</th>
+            <th>@Html.DisplayNameFor(model => model.Genre)</th>
+            <th>@Html.DisplayNameFor(model => model.Synopsis)</th>
+            <th>@Html.DisplayNameFor(model => model.AudienceRating)</th>
+            <th>@Html.DisplayNameFor(model => model.Runtime)</th>
+            <th>@Html.DisplayNameFor(model => model.ReleaseDate)</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr>
             <td>
-                <img src="@item.ImageUrl" alt="Cover Photo" class="index-thumbnail" />
+                @if (!string.IsNullOrEmpty(item.ImageUrl))
+                {
+                    <img src="@item.ImageUrl" alt="Cover Photo" class="index-thumbnail" style="max-width: 80px; height: auto;" />
+                }
             </td>
+            <td>@Html.DisplayFor(modelItem => item.Title)</td>
+            <td>@Html.DisplayFor(modelItem => item.Genre.Title)</td>
             <td>
-                @Html.DisplayFor(model => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.Genre.Title)
-            </td>
-            <td>
+                @if (item.Synopsis != null && item.Synopsis.Length > 30)
+                {
                     @item.Synopsis.Substring(0, 30)<a asp-action="Details" asp-route-id="@item.Id">...more</a>
+                }
+                else
+                {
+                    @item.Synopsis
+                }
             </td>
+            <td>@Html.DisplayFor(modelItem => item.AudienceRating.Title)</td>
+            <td>@Html.DisplayFor(modelItem => item.Runtime) mins</td>
+            <td>@item.ReleaseDate.ToString("yyyy-MM-dd")</td>
             <td>
-                @Html.DisplayFor(model => item.AudienceRating.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.Runtime)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.ReleaseDate)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id"><button type="submit" class="btn btn-success"><i class="bi bi-pencil"></i></button></a> 
-                <a asp-action="Details" asp-route-id="@item.Id"><button type="submit" class="btn btn-secondary"><i class="bi bi-three-dots"></i></button></a> 
-                <a asp-action="Delete" asp-route-id="@item.Id"><button type="submit" class="btn btn-danger"><i class="bi bi-trash"></i></button> </a>
+                <div class="btn-group" role="group">
+                    @if (User.IsInRole("administrator"))
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-success"><i class="bi bi-pencil"></i></a> 
+                    }
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-secondary"><i class="bi bi-three-dots"></i></a> 
+                    @if (User.IsInRole("administrator"))
+                    {
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger"><i class="bi bi-trash"></i></a>
+                    }
+                </div>
             </td>
         </tr>
 }

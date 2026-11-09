@@ -1,11 +1,13 @@
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-// using MoviesAdmin.Data; // Removed: not needed, context is in global namespace
 using MoviesAdmin.Models;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace MoviesAdmin.Controllers
 {
+    [Authorize(Roles = "administrator")]
     public class AudienceRatingsController : Controller
     {
         private readonly MoviesAdminContext _context;
@@ -25,9 +27,10 @@ namespace MoviesAdmin.Controllers
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
-            var audienceRating = await _context.AudienceRating
-                .FirstOrDefaultAsync(m => m.Id == id);
+
+            var audienceRating = await _context.AudienceRating.FirstOrDefaultAsync(m => m.Id == id);
             if (audienceRating == null) return NotFound();
+
             return View(audienceRating);
         }
 
@@ -55,8 +58,10 @@ namespace MoviesAdmin.Controllers
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
+
             var audienceRating = await _context.AudienceRating.FindAsync(id);
             if (audienceRating == null) return NotFound();
+
             return View(audienceRating);
         }
 
@@ -66,6 +71,7 @@ namespace MoviesAdmin.Controllers
         public async Task<IActionResult> Edit(int id, [Bind("Id,Title")] AudienceRating audienceRating)
         {
             if (id != audienceRating.Id) return NotFound();
+
             if (ModelState.IsValid)
             {
                 try
@@ -87,9 +93,10 @@ namespace MoviesAdmin.Controllers
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
-            var audienceRating = await _context.AudienceRating
-                .FirstOrDefaultAsync(m => m.Id == id);
+
+            var audienceRating = await _context.AudienceRating.FirstOrDefaultAsync(m => m.Id == id);
             if (audienceRating == null) return NotFound();
+
             return View(audienceRating);
         }
 

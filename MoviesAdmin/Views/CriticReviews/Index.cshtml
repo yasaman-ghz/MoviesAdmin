@@ -5,11 +5,7 @@
 
 <h1>Critic Reviews</h1>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Add Critic Review</a>
-</p>
-
-<table class="table">
+<table class="table align-middle">
     <thead>
         <tr>
             <th>Movie</th>
@@ -27,14 +23,24 @@
             <tr>
                 <td>@item.Movie?.Title</td>
                 <td>@Html.DisplayFor(modelItem => item.Title)</td>
-                <td>@Html.DisplayFor(modelItem => item.Rating)</td>
-                <td>@Html.DisplayFor(modelItem => item.IsPublished)</td>
+                <td>@Html.DisplayFor(modelItem => item.Rating) / 5</td>
+                <td>
+                    <span class="badge @(item.IsPublished ? "bg-success" : "bg-warning text-dark")">
+                        @(item.IsPublished ? "Published" : "Draft")
+                    </span>
+                </td>
                 <td>@Html.DisplayFor(modelItem => item.CreatedBy)</td>
                 <td>@Html.DisplayFor(modelItem => item.CreatedDate)</td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-success">Edit</a>
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-secondary">Details</a>
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
+                    <!-- Details is always visible to the owner critic -->
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-secondary btn-sm">Details</a>
+                    
+                    <!-- Requirement 7 & B: Edit and Delete are only rendered if the review remains an unpublished draft -->
+                    @if (!item.IsPublished)
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-success btn-sm">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
+                    }
                 </td>
             </tr>
         }

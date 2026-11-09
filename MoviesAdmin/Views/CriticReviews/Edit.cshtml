@@ -9,41 +9,43 @@
     <div class="col-md-6">
         <form asp-action="Edit">
             <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="MovieId" />
+            <input type="hidden" asp-for="CreatedBy" />
+            <input type="hidden" asp-for="CreatedDate" />
+            
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
+            <!-- Requirement B: Displays which specific movie this review is written for instead of a selection dropdown -->
             <div class="form-group mb-3">
-                <label asp-for="MovieId" class="control-label">Movie</label>
-                <select asp-for="MovieId" class="form-control" asp-items="ViewBag.MovieId"></select>
-                <span asp-validation-for="MovieId" class="text-danger"></span>
+                <label class="control-label fw-bold">Movie</label>
+                <input class="form-control" value="@Model.Movie?.Title" readonly />
             </div>
+            
             <div class="form-group mb-3">
                 <label asp-for="Title" class="control-label"></label>
                 <input asp-for="Title" class="form-control" />
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
+            
+            <!-- Requirement 8: Constrained to max 1000 characters -->
             <div class="form-group mb-3">
                 <label asp-for="Description" class="control-label"></label>
-                <textarea asp-for="Description" class="form-control" rows="5"></textarea>
+                <textarea asp-for="Description" class="form-control" rows="5" maxlength="1000"></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
+            
+            <!-- Requirement 8: Numerical validation tracking -->
             <div class="form-group mb-3">
-                <label asp-for="Rating" class="control-label"></label>
-                <input asp-for="Rating" class="form-control" />
+                <label asp-for="Rating" class="control-label">Rating (0 out of 5)</label>
+                <input asp-for="Rating" class="form-control" type="number" step="0.1" min="0" max="5" />
                 <span asp-validation-for="Rating" class="text-danger"></span>
             </div>
+            
             <div class="form-check mb-3">
-                <input asp-for="IsPublished" class="form-check-input" />
+                <input asp-for="IsPublished" class="form-check-input" id="IsPublished" />
                 <label asp-for="IsPublished" class="form-check-label"></label>
             </div>
-           @* <div class="form-group mb-3">
-                <label asp-for="CreatedBy" class="control-label"></label>
-                <input asp-for="CreatedBy" class="form-control" />
-                <span asp-validation-for="CreatedBy" class="text-danger"></span>
-            </div>
-            <div class="form-group mb-3">
-                <label asp-for="CreatedDate" class="control-label"></label>
-                <input asp-for="CreatedDate" class="form-control" type="date" />
-                <span asp-validation-for="CreatedDate" class="text-danger"></span>
-            </div>*@
+            
             <button type="submit" class="btn btn-primary">Save</button>
             <a asp-action="Index" class="btn btn-secondary">Back to List</a>
         </form>
@@ -51,5 +53,18 @@
 </div>
 
 @section Scripts {
+    <!-- Requirement B: Interactive prompt checking submission properties -->
+    <script>
+        $(document).ready(function () {
+            $('form').submit(function (e) {
+                if ($('#IsPublished').is(':checked')) {
+                    var confirmPublish = confirm("Warning: You will not be able to edit or delete this review if you choose to publish it. Do you want to proceed?");
+                    if (!confirmPublish) {
+                        e.preventDefault();
+                    }
+                }
+            });
+        });
+    </script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

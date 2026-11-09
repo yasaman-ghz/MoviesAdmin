@@ -1,7 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MoviesAdmin.Models;
+using System.Linq;
+using System.Threading.Tasks;
 
+[Authorize(Roles = "administrator")]
 public class GenresController : Controller
 {
     private readonly MoviesAdminContext _context;
@@ -20,12 +24,11 @@ public class GenresController : Controller
     // GET: Genres/Details/5
     public async Task<IActionResult> Details(int? id)
     {
-        if (id == null)
-            return NotFound();
-        var genre = await _context.Genre
-            .FirstOrDefaultAsync(m => m.Id == id);
-        if (genre == null)
-            return NotFound();
+        if (id == null) return NotFound();
+
+        var genre = await _context.Genre.FirstOrDefaultAsync(m => m.Id == id);
+        if (genre == null) return NotFound();
+
         return View(genre);
     }
 
@@ -52,11 +55,11 @@ public class GenresController : Controller
     // GET: Genres/Edit/5
     public async Task<IActionResult> Edit(int? id)
     {
-        if (id == null)
-            return NotFound();
+        if (id == null) return NotFound();
+
         var genre = await _context.Genre.FindAsync(id);
-        if (genre == null)
-            return NotFound();
+        if (genre == null) return NotFound();
+
         return View(genre);
     }
 
@@ -65,8 +68,8 @@ public class GenresController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, [Bind("Id,Title")] Genre genre)
     {
-        if (id != genre.Id)
-            return NotFound();
+        if (id != genre.Id) return NotFound();
+
         if (ModelState.IsValid)
         {
             try
@@ -76,10 +79,8 @@ public class GenresController : Controller
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!GenreExists(genre.Id))
-                    return NotFound();
-                else
-                    throw;
+                if (!GenreExists(genre.Id)) return NotFound();
+                else throw;
             }
             return RedirectToAction(nameof(Index));
         }
@@ -89,12 +90,11 @@ public class GenresController : Controller
     // GET: Genres/Delete/5
     public async Task<IActionResult> Delete(int? id)
     {
-        if (id == null)
-            return NotFound();
-        var genre = await _context.Genre
-            .FirstOrDefaultAsync(m => m.Id == id);
-        if (genre == null)
-            return NotFound();
+        if (id == null) return NotFound();
+
+        var genre = await _context.Genre.FirstOrDefaultAsync(m => m.Id == id);
+        if (genre == null) return NotFound();
+
         return View(genre);
     }
 

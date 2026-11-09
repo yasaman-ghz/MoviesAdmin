@@ -5,62 +5,68 @@
 }
 
 <h1>Add a movie</h1>
-
-
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6">
         <form asp-action="Create" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-           
-            <input type="hidden" asp-for="ImageUrl" />
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            <input type="hidden" asp-for="ImageUrl" value="" />
 
             <div class="mb-3">
-                <label asp-for="Title" class="form-label"></label>
-                <input asp-for="Title" class="form-control" />
+                <label asp-for="Title" class="form-label fw-bold"></label>
+                <input asp-for="Title" class="form-control" placeholder="Enter movie title..." />
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
 
-           <div class="mb-3">
-                <label asp-for="GenreId" class="control-label"></label>
-                <select asp-for="GenreId" class="form-select" asp-items="ViewBag.GenreId"></select>
+            <div class="mb-3">
+                <label asp-for="GenreId" class="form-label fw-bold">Genre</label>
+                <select asp-for="GenreId" class="form-select" asp-items="ViewBag.GenreId">
+                    <option value="">-- Select Genre --</option>
+                </select>
+                <span asp-validation-for="GenreId" class="text-danger"></span>
             </div>
 
             <div class="mb-3">
-                <label asp-for="Synopsis" class="form-label"></label>
-                <textarea style="resize: none;" asp-for="Synopsis" class="form-control"></textarea>     @*Reference: https://getbootstrap.com/docs/5.3/forms/form-control/*@
+                <label asp-for="Synopsis" class="form-label fw-bold"></label>
+                <textarea style="resize: none;" asp-for="Synopsis" class="form-control" rows="4" placeholder="Enter synopsis description..."></textarea>
                 <span asp-validation-for="Synopsis" class="text-danger"></span>
             </div>
 
-           <div class="mb-3">
-                <label asp-for="AudienceRatingId" class="control-label"></label>
-                <select asp-for="AudienceRatingId" class="form-select" asp-items="ViewBag.AudienceRatingId"></select>
+            <div class="mb-3">
+                <label asp-for="AudienceRatingId" class="form-label fw-bold">Audience Rating</label>
+                <select asp-for="AudienceRatingId" class="form-select" asp-items="ViewBag.AudienceRatingId">
+                    <option value="">-- Select Rating --</option>
+                </select>
+                <span asp-validation-for="AudienceRatingId" class="text-danger"></span>
+            </div>
+
+            <!-- Requirement 5: Poster upload controller binding integration -->
+            <div class="mb-3">
+                <label for="coverPhoto" class="form-label fw-bold">Cover Photo</label>
+                <input type="file" name="coverPhoto" id="coverPhoto" class="form-control" accept="image/*" />
+                @Html.ValidationMessage("coverPhoto", new { @class = "text-danger d-block mt-1" })
             </div>
 
             <div class="mb-3">
-                <label for="coverPhoto" class="form-label">Cover Photo</label><br />
-                <input type="file" name="coverPhoto" id="coverPhoto" class="form-control" />
-                @Html.ValidationMessage("coverPhoto", new { @class = "text-danger"})
-            </div>
-
-            <div class="mb-3">
-                <label asp-for="Runtime" class="form-label"></label>
-                <input asp-for="Runtime" class="form-control" />
+                <label asp-for="Runtime" class="form-label fw-bold">Runtime (Minutes)</label>
+                <input asp-for="Runtime" class="form-control" type="number" min="1" placeholder="e.g. 120" />
                 <span asp-validation-for="Runtime" class="text-danger"></span>
             </div>
 
             <div class="mb-3">
-                <label asp-for="ReleaseDate" class="form-label"></label>
-                <input asp-for="ReleaseDate" class="form-control" />
+                <label asp-for="ReleaseDate" class="form-label fw-bold">Release Date</label>
+                <input asp-for="ReleaseDate" class="form-control" type="date" />
                 <span asp-validation-for="ReleaseDate" class="text-danger"></span>
             </div>
-            <div class="mb-3">
-                <input type="submit" value="Save" class="btn btn-success" /> 
+            
+            <div class="pt-2">
+                <button type="submit" class="btn btn-success">Save</button>
+                <a asp-action="Index" class="btn btn-secondary">Back to all</a>
             </div>
         </form>
-        <div style="display: flex;">
-        <a asp-action="Index"><button type="submit" class="btn btn-primary" style="">Back to all</button></a>
-        </div>
     </div>
 </div>
 
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
